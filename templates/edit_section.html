@@ -1,0 +1,62 @@
+{% extends 'base/base.html'%}
+{% load static %}
+{% block content%}
+<style>
+    body {
+    font-family: Arial, sans-serif;
+}
+
+.container form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+</style>
+<div class="container">
+    <h1>Edit {{section.sectionName}} Section</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="lesson_name">Section Name:</label>
+        <input type="text"  name="section-name" value="{{section.sectionName}}">
+        <label for="lesson_name">Section Content:</label>
+        <textarea rows="4" name="section-content">{{ section.content }}</textarea>
+        <br> <br>
+        <button type="submit">Save Changes</button>
+    </form>
+</div
+{% endblock %}

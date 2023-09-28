@@ -1,0 +1,80 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<!-- ... your existing HTML ... -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="mb-5">
+                    <div class="section-title position-relative mb-5">
+                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Section</h6>
+                        <h3 class="display-4"><a href="{% url 'course_details' lesson.course.id %}" style="color: #120F2D;">{{lesson.course.courseName}}</a> - {{ lesson.name }}</h3>
+                    </div>
+                    <div id="section-content">
+                        {% if default_section %}
+                            {% include 'section_template.html' with section=default_section %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="bg-primary mb-5 py-3">
+                    <h3 class="text-white py-3 px-4 m-0">Lesson Sections</h3>
+                    {% for section in sections %}
+                    <div class="d-flex justify-content-between border-bottom px-4">
+                        <h6 class="text-white my-3">
+                            <a href="{% url 'section_view' section.id %}" class="section-link text-white text-decoration-none" data-section-id="{{ section.id }}">Section {{ forloop.counter }}</a>
+                        </h6>
+                        <h6 class="text-white my-3">
+                            <a href="{% url 'section_view' section.id %}" class="section-link text-white text-decoration-none" data-section-id="{{ section.id }}">{{section.sectionName}}</a>
+                        </h6>                    
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mb-5">
+                    <h2 class="mb-3">Lesson Quiz</h2>
+                    <ul class="list-group list-group-flush">
+                        {% for quiz in quizs_result %}
+                        {% for quiz_data , result in quiz.items%}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <a href="{% url 'answer_quiz' quiz_data.id %}" class="text-decoration-none h6 m-0"><h5>{{ quiz_data.title }}</h5></a>
+                            {% if result == 'Not Answerd' %}
+                            <span style="color: black; font-weight: bold;">{{result}} </span>
+                            {% else %}
+                            <span style="color: black; font-weight: bold;"><span>{{result.passed}} </span>{{result.student_mark}}/{{ result.quiz_mark }}</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // JavaScript for loading section content via AJAX
+    const sectionContent = document.getElementById('section-content');
+    const sectionLinks = document.querySelectorAll('.section-link');
+
+    sectionLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const sectionId = this.getAttribute('data-section-id');
+            const sectionUrl = `../section-view/${sectionId}`; // Update with your URL structure
+            fetch(sectionUrl)
+                .then(response => response.text())
+                .then(data => {
+                    sectionContent.innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error loading section content:', error);
+                });
+        });
+    });
+</script>
+{% endblock %}
+

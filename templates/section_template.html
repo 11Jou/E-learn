@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .video-container {
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .custom-video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .section-content-text {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .start-meeting-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Comment Form Styles */
+        .comment-form {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .comment-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            resize: vertical;
+        }
+
+        .comment-form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .comment-form button:hover {
+            background-color: #0056b3;
+        }
+
+        #comment-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .comment {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Reply Styles */
+        .reply-form {
+            margin-top: 10px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+
+        .reply-form textarea {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            resize: vertical;
+        }
+
+        .reply-button {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .reply-button:hover {
+            background-color: #0056b3;
+        }
+
+        .view-replies-button{
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .view-replies-button:hover {
+            background-color: #0056b3;
+        }
+        .reply {
+        margin-bottom: 10px; /* Add margin at the bottom of each reply */
+        padding: 10px; /* Add padding to each reply */
+    }
+
+    </style>
+</head>
+<body>
+    <div class="section-content">
+        <h2>{{ section.sectionName }}</h2>
+        {% if section.video %}
+        <div class="video-container">
+            <video controls class="custom-video" controlsList="nodownload">
+                <source src="{{ section.video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        {% else %}
+        <div class="video-content-container">
+            <p>This Section Will be online at : {{ online.start_time }}</p>
+            <a href="{{online.url}}"><button class="start-meeting-button">Join Meeting</button></a>
+        </div>
+        {% endif %}
+    
+        <div class="section-content-text">
+            <span style="font-weight: bold;">{{ section.content }}</span>
+            <a href="{% url 'pdf_view' section.id %}" target="_blank"> You Can View Section PDF</a>
+        </div>
+    
+        <div class="comment-form">
+            <h3>Ask Question</h3>
+            <form id="comment-form" name="write-comment" method="post">
+                {% csrf_token %}
+                <input type="hidden" id="section-id" name="section_id" value="{{ section.id }}">
+                <textarea id="comment" name="comment" rows="4" cols="50" placeholder="Add Comment ..."></textarea>
+                <br> <br>
+                <button type="submit">Post</button>
+            </form>
+        </div>
+        <ul id="comment-list">
+            {% for comment in comments %}
+            <li class="comment">
+                <p style="font-weight: bold; color: #007bff;"> {{ comment.person.username }}: <span style="color: black;">{{ comment.content }}</span></p>
+                <button class="reply-button" data-comment-id="{{ comment.id }}">Reply</button>
+                <button class="view-replies-button" data-comment-id="{{ comment.id }}">View Replies</button>
+                <div class="reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
+                    <form name="write-reply" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                        <textarea name="reply" rows="2" cols="30" placeholder="Add Reply ..."></textarea>
+                        <button class="reply-button" type="submit">Post Reply</button>
+                    </form>
+                </div>
+                <ul class="replies-list" id="replies-list-{{ comment.id }}" style="display: none;">
+                    <!-- Add a placeholder for fetched data -->
+                    <div class="fetched-data" id="fetched-data-{{ comment.id }}"></div>
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>        
+                
+    </div>
+    <script>
+        $(document).on('submit', '#comment-form', function(e) {
+            e.preventDefault();
+            var sectionId = $('#section-id').val();
+            var url = '../add-comment/' + sectionId;
+        
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    comment: $('#comment').val(),
+                    section_id: sectionId, 
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(data) {
+                    console.log('Comment posted successfully');
+                    $('#comment').val('');
+                    $('#comment-list').append('<li class="comment"><strong style="color:#007bff;">You:</strong> ' + data.comment + '</li>');
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error('Error:', textStatus, errorThrown);
+                }
+            });
+        });
+        $(document).ready(function() {
+    $(document).on('click', '.reply-button', function() {
+        var commentId = $(this).data('comment-id');
+        $('#reply-form-' + commentId).toggle();
+    });
+
+
+    $(document).on('submit', 'form[name="write-reply"]', function(e) {
+        e.preventDefault();
+        var commentId = $(this).find('input[name="comment_id"]').val();
+        var replyText = $(this).find('textarea[name="reply"]').val();
+        var url = '../add-reply/' + commentId;
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                reply: replyText,
+                comment_id: commentId,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(data) {
+                console.log('Reply posted successfully');
+                $('#reply-form-' + commentId).hide();
+                $('#replies-list-' + commentId).append('<ul class="reply style="font-weight: bold; color:black;">' + data.reply + '</ul>');
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+            }
+        });
+    });
+});
+
+
+$(document).ready(function() {
+    function fetchData(commentId) {
+        var url = '../view-reply/' + commentId;
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'json',
+            success: function(data) {
+                var replies = data.replies;
+                var repliesList = $('#replies-list-' + commentId);
+                repliesList.empty();
+                
+                replies.forEach(function(reply) {
+                    $.each(reply, function(username, content) {
+                        repliesList.append('<ul class="reply"><p style="font-weight: bold; display: inline; margin-right: 5px; color: #007bff">' + username + ':</p><p style="display: inline; margin-left: 5px; font-weight: bold; color:black;">' + content + '</p></ul>');
+                    });
+                });
+                $('#fetched-data-' + commentId).show(); 
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+            }
+        });
+    }
+    $(document).on('click', '.view-replies-button', function() {
+        var commentId = $(this).data('comment-id');
+        $('#replies-list-' + commentId).toggle();
+            fetchData(commentId);
+    });
+
+});
+        </script>                
+    </body>
+</html>

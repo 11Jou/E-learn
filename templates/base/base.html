@@ -1,0 +1,13 @@
+{% load static %}
+<body>
+    <!-- Header content -->
+    {% include 'base/header.html' %}
+    
+    <!-- Page-specific content -->
+    {% block content %}
+    {% endblock %}
+
+    <!-- Footer content -->
+    {% include 'base/footer.html' %}
+</body>
+</html>

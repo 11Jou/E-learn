@@ -1,0 +1,9 @@
+{% extends 'base/base.html'%}
+{% load static %}
+{% block content%}
+{% if is_used %}
+<h1 style="font-family: Arial, sans-serif; text-align: center;">Sorry this invitation is used before</h1>
+{% else %}
+<h1 style="font-family: Arial, sans-serif; text-align: center;">Sorry this invitation is expired</h1>
+{% endif %}
+{% endblock %}

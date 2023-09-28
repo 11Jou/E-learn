@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .container1 {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options li {
+            margin-bottom: 10px;
+        }
+        .submit-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+</style>
+<h1 style="text-align: center;">{{quiz_name}}</h1>
+<div class="container1">
+    <form id="quiz-form" method="post">
+        {% csrf_token %}
+        {% for q , choices in quiz.items %}
+        <div class="question">
+            <p style="font-weight: bold;">Q{{ forloop.counter }}. {{q.content}}</p>
+        </div>
+        <ul class="options">
+            {% for choice in choices %}
+            <li>
+                <input required type="radio" name="{{q.id}}" value="{{choice.id}}"> {{choice.answer}}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+
+        <button class="submit-button" type="submit">Submit</button>
+    </form>
+
+    <div id="result" style="text-align: center;"></div>
+</div>
+{% endblock %}

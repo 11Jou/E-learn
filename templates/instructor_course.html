@@ -1,0 +1,56 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .button-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .button-container button {
+        padding: 10px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer; /* Add pointer cursor for better UX */
+        transition: background-color 0.3s; /* Add smooth hover effect */
+    }
+
+    .button-container button:hover {
+        background-color: #0056b3; /* Change color on hover */
+    }
+</style>
+<h2 style="text-align: center;">Your Courses</h2>
+<div class="button-container">
+    <a href="{% url 'upload_course' %}">
+        <button id="addLessonBtn">Add New Course</button>
+    </a>
+</div>
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row">
+            {% for course in courses %}
+            <div class="col-lg-4 col-md-6 pb-4">
+                <div class="courses-list-item position-relative d-block overflow-hidden mb-2">
+                    <img class="img-fluid" src="{{course.image.url}}" alt="">
+                    <div class="courses-text">
+                        <h4 class="text-center text-white px-3"><a  href="{% url 'upload_lesson' course.id %}" style="color: white;">{{course.courseName}}</a></h4>
+                        <div class="border-top w-100 mt-3">
+                            <div class="d-flex justify-content-between p-4">
+                                <span class="text-white"><i class="fa fa-star mr-2"></i>{{course.Type}}</span>
+                                <!-- Add Delete Button -->
+                                <form method="post" action="{% url 'delete_course' course.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

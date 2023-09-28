@@ -1,0 +1,103 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .generate-button-container {
+        text-align: center;
+    }
+    
+    .center-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    
+    .generate-button {
+        background-color: #1465d9;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        display: inline-block;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    
+    .generate-button:hover {
+        background-color: #0e52b1;
+        text-decoration: none;
+    }
+    
+    .copy-button {
+        background-color: #0e52b1;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        display: inline-block;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    
+    .copy-button:hover {
+        background-color: #0e52b1;
+        text-decoration: none;
+    }
+    
+    /* Style the input field */
+    #invitation-link {
+        width: 70%; /* Adjust the width as needed */
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        background-color: #f0f0f0;
+        color: #333;
+        text-align: center;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Style the container for input and button */
+    .input-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px; /* Adjust the margin as needed */
+    }
+    </style>
+    
+    
+
+<h3 style="text-align: center; padding: 30px; margin: 30px;">Hello {{instructor}}, <br>you can generate a new invitation link by clicking on <span style="color: blue;">Generate</span> <br>button to invite your students to attend your lectures online
+    <br><span style="color: red;">Link can only be used once</span> 
+</h3>
+
+<div class="generate-button-container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="expiration-date-container">
+            <label for="expiration-date">Expiration Date and Time:</label>
+            <input type="datetime-local" id="expiration-date" name="expiration_date" required>
+        </div> <br>
+        <button type="submit" class="generate-button">Generate</button>
+    </form>
+    
+    
+</div>
+
+<!-- Centered container for the invitation link and "Copy" button -->
+<div class="center-container">
+    <input type="text" id="invitation-link" value="{{ link }}" readonly>
+    <button class="copy-button" onclick="copyToClipboard()">Copy</button>
+</div>
+
+<script>
+function copyToClipboard() {
+    var copyText = document.getElementById("invitation-link");
+    copyText.select();
+    document.execCommand("copy");
+    alert("Link copied to clipboard!");
+}
+</script>
+
+{% endblock %}

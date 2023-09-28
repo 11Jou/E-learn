@@ -1,0 +1,112 @@
+{% extends 'base/base.html'%}
+{% load static %}
+{% block content%}
+<script src="{% static 'js/main.js' %}"></script>
+    <!-- Header Start -->
+    <div class="jumbotron jumbotron-fluid position-relative overlay-bottom" style="margin-bottom: 90px;">
+        <div class="container text-center my-5 py-5">
+            <h1 class="text-white mt-4 mb-4">Learn From Home</h1>
+            <h1 class="text-white display-1 mb-5">Education Courses</h1>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- About Start -->
+    <div class="container-fluid py-5" id="about">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
+                    <div class="position-relative h-100">
+                        <img class="position-absolute w-100 h-100" src="{% static 'img/labtop.jpeg' %}" style="object-fit: cover;">
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="section-title position-relative mb-4">
+                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">About Us</h6>
+                        <h1 class="display-4">Your First Choice For Online Education Anywhere</h1>
+                    </div>
+                    <p>Welcome to Your E-Learning Website Name, where personalized learning meets expert guidance! 
+                        We are passionate about education and dedicated to providing a unique online learning experience tailored to your needs.
+                        At Your E-Learning Website Name, we understand that every student is unique, 
+                        and that's why we've built a platform that allows you to access courses curated specifically for you by your trusted instructors. 
+                        Our mission is to facilitate seamless, instructor-student connections, ensuring that you receive the most relevant and engaging education possible.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About End -->
+
+    <!-- Contact Start -->
+    {% if not user.is_superuser%}
+    <div class="container-fluid py-5" id="contact">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-5 mb-lg-0">
+                    <div class="bg-light d-flex flex-column justify-content-center px-5" style="height: 450px;">
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="btn-icon bg-primary mr-4">
+                                <i class="fa fa-2x fa-map-marker-alt text-white"></i>
+                            </div>
+                            <div class="mt-n1">
+                                <h4>Our Location</h4>
+                                <p class="m-0">123 Street, New York, USA</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-5">
+                            <div class="btn-icon bg-secondary mr-4">
+                                <i class="fa fa-2x fa-phone-alt text-white"></i>
+                            </div>
+                            <div class="mt-n1">
+                                <h4>Call Us</h4>
+                                <p class="m-0">+012 345 6789</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="btn-icon bg-warning mr-4">
+                                <i class="fa fa-2x fa-envelope text-white"></i>
+                            </div>
+                            <div class="mt-n1">
+                                <h4>Email Us</h4>
+                                <p class="m-0">info@example.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="section-title position-relative mb-4">
+                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Need Help?</h6>
+                        <h1 class="display-4">Send Us A Message</h1>
+                    </div>
+                    <div class="contact-form">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12 form-group">
+                                    <input type="text" class="form-control border-top-0 border-right-0 border-left-0 p-0" placeholder="Your Name" name="name" required="required">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 form-group">
+                                    <input type="email" class="form-control border-top-0 border-right-0 border-left-0 p-0" placeholder="Your Email" name="email" required="required">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 form-group">
+                                    <textarea class="form-control border-top-0 border-right-0 border-left-0 p-0" rows="5" placeholder="Message" name="message" required="required"></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <button class="btn btn-primary py-3 px-5" type="submit">Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Contact End -->
+{% endblock %}

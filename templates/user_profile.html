@@ -1,0 +1,98 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .main {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start; /* Align items to the top of the container */
+        height: 100vh;
+    }
+
+    .profile-card {
+        background-color: #f0f0f0;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        width: 800px; /* Adjust the width as needed */
+        display: flex;
+        flex-direction: column; /* Stack elements vertically */
+    }
+
+    .profile-info {
+        font-size: 18px;
+    }
+
+    .profile-label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    /* Add styles for the form */
+    .profile-form {
+        margin-top: 20px;
+    }
+
+    .profile-form label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .profile-form input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .save-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .save-button:hover {
+        background-color: #0056b3;
+    }
+
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-size: cover;
+        margin-bottom: 20px;
+        margin-right: 100px; /* Adjust the margin-right as needed to move the picture left */
+    }
+</style>
+<h2 style="text-align: center;">Personal Information</h2> <br>
+<div class="main">
+    <div class="profile-picture" style="background-image: url('{{ student.photo.url }}');"></div>
+    <div class="profile-card">
+        <form class="profile-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{student.user.username}}">
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{student.name}}">
+
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" value="{{student.user.email}}">
+
+            <label for="instructor_name">Instructor Name</label>
+            <input type="text" id="instructor_name" name="instructor_name" value="{{instructor.name}}" readonly>
+
+            <label for="profile-picture">Profile Picture</label>
+            <input type="file" id="file-input" name="photo" accept="image/*"> <br> <br>
+
+            <button class="save-button" type="submit">Save Changes</button>
+            <p style="color: red;">{{message}}</p>
+        </form>
+    </div>
+</div>
+{% endblock %}

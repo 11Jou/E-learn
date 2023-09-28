@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Detail Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="mb-5">
+                    <div class="section-title position-relative mb-5">
+                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Course Detail</h6>
+                        <h1 class="display-4">{{ course.courseName }}</h1>
+                    </div>
+                    <img class="img-fluid rounded w-100 mb-4" src="{{ course.image.url }}" alt="Image" style="height: 750px;">
+                    <p style="font-weight: bold;">{{ course.description }}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="bg-primary mb-5 py-3">
+                    <h3 class="text-white py-3 px-4 m-0">Course Lessons</h3>
+                    {% for lesson_info in lessons %}
+                    <div class="d-flex justify-content-between border-bottom px-4">
+                        {% if lesson_info.can_view_anytime %}
+                        <h6 class="text-white my-3"><a href="{% url 'lesson_view' lesson_info.lesson.id %}" class="text-white text-decoration-none">Lesson {{ forloop.counter }}: {{ lesson_info.lesson.name }}</a></h6>
+                        <h6 class="text-white my-3">
+                            {% if lesson_info.completed %}
+                            <span class="badge badge-success">Completed</span>
+                            {% else %}
+                            <span class="badge badge-warning">In Progress</span>
+                            {% endif %}
+                        </h6>
+                        {% elif lesson_info.can_access %}
+                        <h6 class="text-white my-3"><a href="{% url 'lesson_view' lesson_info.lesson.id %}" class="text-white text-decoration-none">Lesson {{ forloop.counter }}</a></h6>
+                        <h6 class="text-white my-3">
+                            {% if lesson_info.completed %}
+                            <span class="badge badge-success">Completed</span>
+                            {% else %}
+                            <span class="badge badge-warning">In Progress</span>
+                            {% endif %}
+                        </h6>
+                        {% else %}
+                        <h6 class="text-white my-3">{{ lesson_info.lesson.name }} Lesson is Closed now</h6>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Detail End -->
+
+{% endblock %}

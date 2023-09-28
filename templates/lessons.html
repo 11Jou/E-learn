@@ -1,0 +1,264 @@
+{% extends 'base/base.html'%}
+{% load static %}
+{% block content%}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            width: 90%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* Additional styles for the form container */
+        .lesson-form {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 500px;
+        max-width: 800px; /* Add max-width to prevent it from becoming too wide */
+        z-index: 1000; /* Ensure the form appears above other content */
+    }
+
+        .close-button {
+            display: block;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .close-button button {
+            background-color: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .close-button button:hover {
+            color: #007BFF;
+        }
+
+        .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+        z-index: 999; /* Ensure the overlay covers the entire page */
+}
+ /* Button container */
+ .button-container {
+        display: flex; 
+        justify-content: center; 
+        padding: 10px;
+    }
+
+    /* Add Lesson button */
+    #addLessonBtn {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    #addLessonBtn:hover {
+        background-color: #0056b3;
+    }
+
+    /* Access Course button */
+    #accessCourseBtn {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+
+    #accessCourseBtn:hover {
+        background-color: #0056b3;
+    }
+    .lesson-container {
+        display: inline-block;
+        margin: 10px;
+        padding: 15px;
+        border: 1px solid #e1e1e1;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        text-align: center;
+        position: relative;
+    }
+    .lesson-container button{
+        background-color: green;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+    }
+    .lesson-container button#red-button {
+        background-color: #FF0000; /* Red background color */
+    }
+    .lesson-container button:hover{
+        background-color: #0056b3;
+    }
+    .lesson-container button#red-button:hover {
+        background-color: #D70000;
+    }
+
+    .lesson-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    /* Edit and Delete buttons */
+
+    </style>
+</head>
+<body>
+    <h1>{{course.courseName}}</h1>
+    <div class="button-container">
+        <button id="addLessonBtn">Add Lesson</button>
+        <button id="accessCourseBtn">Student Access</button>
+    </div>
+<div class="overlay" id="accessFormOverlay"></div>
+<div class="lesson-form" id="accessForm">
+    <div class="close-button">
+        <button id="closeAccessFormBtn">×</button>
+    </div>
+    <h2>Student Access</h2>
+    <div class="form-content" style="height: 520px; overflow: auto;"> <!-- Adjust the height as needed -->
+    <form method="post" enctype="multipart/form-data" id="accessFormContent">
+        {% csrf_token %}
+        <label for="lessons" style="color: black;">Select Students:</label> <br>
+        {% for student in students %}
+        <input type="checkbox" id="student_{{ student.id }}" name="students" value="{{ student.id }}">
+        <label for="student_{{ student.id }}">{{ student.name }}</label>
+        <br>
+        {% endfor %}
+        <label for="lessons" style="color: black;">Select Lesson:</label>
+        <select name="lessons" id="lessons">
+            {% for lesson in lessons %}
+            <option value="{{lesson.id}}">{{lesson.name}}</option>
+            {% endfor %}
+        </select> <br>
+        <input type="checkbox" id="anytime" name="anytime">
+        <label for="anytime">Can View Anytime</label>
+        <br>
+        <label for="start_date" style="color: black;">Start Date:</label>
+        <input type="date" id="start_date" name="start_date">
+        <br>
+        <label for="end_date" style="color: black;">End Date:</label>
+        <input type="date" id="end_date" name="end_date">
+        <br>
+        <label for="start_time" style="color: black;">Start Time:</label>
+        <input type="time" id="start_time" name="start_time">
+        <br>
+        <label for="end_time" style="color: black;">End Time:</label>
+        <input type="time" id="end_time" name="end_time">
+        <br>
+        <button type="submit" name="student-form">Save</button>
+    </form>
+</div>
+</div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="lesson-form" id="lessonForm">
+        <div class="close-button">
+            <button id="closeFormBtn">×</button> 
+        </div>
+        <h2>Lesson Details</h2>
+        <form method="post" enctype="multipart/form-data" id="lessonFormContent">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit" name="lesson-form">Add</button>
+        </form>
+    </div>
+    
+    {% for lesson in lessons %}
+    <div class="lesson-container">
+        <a href="{% url 'upload_section' lesson.id %}"><h1 class="lesson-title">Lesson Name: {{ lesson.name }}</h1></a>
+        <a href="{% url 'edit' lesson.id %}"><button class="editLessonBtn" data-lesson-id="{{ lesson.id }}">Edit</button></a>
+        <a href="{% url 'delete' lesson.id %}"><button id="red-button">Delete</button></a>
+    </div>
+    {% endfor %}
+
+
+    <script>
+        const addLessonBtn = document.getElementById("addLessonBtn");
+        const accessCourseBtn = document.getElementById("accessCourseBtn");
+        const lessonForm = document.getElementById("lessonForm");
+        const accessForm = document.getElementById("accessForm");
+        const closeAccessFormBtn = document.getElementById("closeAccessFormBtn");
+        const closeFormBtn = document.getElementById("closeFormBtn");
+        const lessonFormContent = document.getElementById("lessonFormContent");
+        addLessonBtn.addEventListener("click", () => {
+            lessonForm.style.display = "block";
+            overlay.style.display = "block";
+        });
+        accessCourseBtn.addEventListener("click", () => {
+            accessForm.style.display = "block";
+            accessFormOverlay.style.display = "block";
+        });
+
+        closeAccessFormBtn.addEventListener("click", () => {
+            accessForm.style.display = "none";
+            accessFormOverlay.style.display = "none";
+        });
+
+        closeFormBtn.addEventListener("click", () => {
+            lessonForm.style.display = "none";
+            overlay.style.display = "none";
+        });
+    
+    </script>        
+</body>
+</html>
+{% endblock %}

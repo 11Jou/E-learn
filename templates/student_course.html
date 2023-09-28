@@ -1,0 +1,60 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .button-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .button-container button {
+        padding: 10px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s; 
+    }
+
+    .button-container button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<h5 style="text-align: center;">Hello {{student.name}}, You can attend lectures that related to your instructor 
+    <span style="color: #007BFF;">{{instructor.name}}</span></h5>
+
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row mx-0 justify-content-center">
+                <div class="col-lg-8">
+                    <div class="section-title text-center position-relative mb-5">
+                        <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Your Courses</h6>
+                    </div>
+                </div>
+            </div>           
+            <div class="row">
+                {% for course in courses %}
+                <div class="col-lg-4 col-md-6 pb-4">
+                    <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="{% url 'course_details' course.course.id %}">
+                        <img class="img-fluid" src="{{course.course.image.url}}" alt="">
+                        <div class="courses-text">
+                            <h4 class="text-center text-white px-3">{{course.course.courseName}}</h4>
+                            <div class="border-top w-100 mt-3">
+                                <div class="d-flex justify-content-between p-4">
+                                    <span class="text-white"><i class="fa fa-star mr-2"></i>{{course.course.Type}}</span>
+                                    {% if course.completed %}
+                                    <span class="badge badge-success">Completed</span>
+                                    {% else %}
+                                    <span class="badge badge-warning">In Progress</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

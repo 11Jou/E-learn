@@ -1,0 +1,134 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* Updated CSS for creative styling */
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .container form {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button[type="submit"],
+    [type='button'] {
+        width: 100%;
+        padding: 10px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .question {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .choice {
+        margin-top: 5px;
+    }
+</style>
+<div class="container">
+    <h1>Quiz For {{ lesson.name }} Lesson</h1>
+<form id="quiz-form" method="post">
+    {% csrf_token %}
+    <label for="quiz-name">Quiz Name:</label>
+    <input type="text" id="quiz-name" name="quiz-name" required><br><br>
+    <div id="questions-container">
+    </div>
+    <button type="button" id="add-question">Add Question</button><br><br>
+    <button type="submit">Create Quiz</button> <br> <br>
+    <span style="color: red; text-align: center;"><p>{{message}}</p></span>
+</form>
+
+</div>
+
+<script>
+const addQuestionButton = document.getElementById('add-question');
+const questionsContainer = document.getElementById('questions-container');
+let questionCounter = 0;
+
+addQuestionButton.addEventListener('click', () => {
+    const questionDiv = document.createElement('div');
+    questionDiv.classList.add('question');
+
+    const questionLabel = document.createElement('label');
+    questionLabel.textContent = 'Question:';
+    const questionInput = document.createElement('input');
+    questionInput.setAttribute('type', 'text');
+    questionInput.setAttribute('name', `questions[]`);
+    questionInput.required = true;
+
+    let correctAnswerIndex = null; // Store the index of the correct answer
+
+    for (let i = 1; i <= 3; i++) {
+        const choiceLabel = document.createElement('label');
+        choiceLabel.textContent = `Choice ${i}:`;
+        const choiceInput = document.createElement('input');
+        choiceInput.setAttribute('type', 'text');
+        choiceInput.setAttribute('name', `choices[${questionCounter}][${i - 1}]`);
+        choiceInput.required = true;
+        choiceInput.classList.add('choice');
+
+        // Create radio buttons for marking correct answers
+        const isCorrectLabel = document.createElement('label');
+        isCorrectLabel.textContent = `Correct?`;
+        const isCorrectInput = document.createElement('input');
+        isCorrectInput.setAttribute('type', 'radio');
+        isCorrectInput.setAttribute('name', `correct[${questionCounter}]`);
+        isCorrectInput.value = i - 1; 
+        isCorrectInput.required = true;
+
+        // Add an event listener to capture the correct answer
+        isCorrectInput.addEventListener('change', (event) => {
+            correctAnswerIndex = event.target.value;
+        });
+
+        choiceLabel.appendChild(isCorrectLabel);
+        choiceLabel.appendChild(isCorrectInput);
+        questionDiv.appendChild(choiceLabel);
+        questionDiv.appendChild(choiceInput);
+    }
+    questionDiv.appendChild(questionLabel);
+    questionDiv.appendChild(questionInput);
+    questionsContainer.appendChild(questionDiv);
+
+    questionCounter++;
+});
+
+
+</script>
+{% endblock %}

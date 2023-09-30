@@ -81,11 +81,20 @@
             background-color: #0056b3;
         }
 
-        #comment-list {
-        list-style: none;
-        padding: 0;
-        width: 500px;
+  /* Default styling for the #comment-list */
+#comment-list {
+    list-style: none;
+    padding: 0;
+    width: 500px; /* Set a fixed width for larger screens */
+}
+
+/* Media query for screens smaller than 600px */
+@media (max-width: 600px) {
+    #comment-list {
+        width: 100%; /* Make it 100% width for smaller screens */
     }
+}
+
 
         .comment {
             background-color: #fff;

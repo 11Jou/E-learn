@@ -39,23 +39,31 @@
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
+/* Default styling for the form */
+.lesson-form {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    max-width: 800px;
+    z-index: 1000;
+}
 
-        /* Additional styles for the form container */
-        .lesson-form {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #fff;
-        padding: 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 500px;
-        max-width: 800px; /* Add max-width to prevent it from becoming too wide */
-        z-index: 1000; /* Ensure the form appears above other content */
+/* Media query for screens smaller than 800px */
+@media (max-width: 800px) {
+    .lesson-form {
+        width: 90%; /* Adjust the width as needed for smaller screens */
+        max-width: none; /* Remove the maximum width for smaller screens */
     }
+}
+
 
         .close-button {
             display: block;

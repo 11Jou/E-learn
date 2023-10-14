@@ -131,7 +131,7 @@
         <h2>{{ section.sectionName }}</h2>
         {% if section.video %}
         <div class="video-container">
-            <video controls class="custom-video" controlsList="nodownload">
+            <video controls class="custom-video" controlsList="nodownload" oncontextmenu="return false">
                 <source src="{{ section.video.url }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>

@@ -20,6 +20,10 @@
     .button-container button:hover {
         background-color: #0056b3; /* Change color on hover */
     }
+    .course-box {
+        height: 100%; /* Set the desired height for the course boxes */
+        overflow: hidden;
+    }
 </style>
 <h2 style="text-align: center;">Your Courses</h2>
 <div class="button-container">
@@ -29,13 +33,13 @@
 </div>
 <div class="container-fluid py-5">
     <div class="container py-5">
-        <div class="row">
+        <div class="row" style="display: flex; flex-wrap: wrap;">
             {% for course in courses %}
             <div class="col-lg-4 col-md-6 pb-4">
-                <div class="courses-list-item position-relative d-block overflow-hidden mb-2">
+                <div class="courses-list-item position-relative d-block overflow-hidden mb-2 course-box">
                     <img class="img-fluid" src="{{course.image.url}}" alt="">
                     <div class="courses-text">
-                        <h4 class="text-center text-white px-3"><a  href="{% url 'upload_lesson' course.id %}" style="color: white;">{{course.courseName}}</a></h4>
+                        <h4 class="text-center text-white px-3"><a href="{% url 'upload_lesson' course.id %}" style="color: white;">{{course.courseName}}</a></h4>
                         <div class="border-top w-100 mt-3">
                             <div class="d-flex justify-content-between p-4">
                                 <span class="text-white"><i class="fa fa-star mr-2"></i>{{course.Type}}</span>
@@ -54,3 +58,4 @@
     </div>
 </div>
 {% endblock %}
+

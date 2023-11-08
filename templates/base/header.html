@@ -62,6 +62,10 @@
                     <div class="navbar-nav mx-auto py-0">
                         {% if user.is_authenticated %}
                         {% if user.is_staff and not user.is_superuser %}
+                        {% if request.user.assistant %}
+                        <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                        <a href="{% url 'generate_invitation' %}" class="nav-item nav-link">Invite User</a>
+                        {% else %}
                         <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
                         <a href="{% url 'generate_invitation' %}" class="nav-item nav-link">Invite User</a>
                         <div class="nav-item dropdown">
@@ -71,6 +75,7 @@
                                 <a href="{% url 'instructor_student' %}" class="dropdown-item">Your Students</a>
                             </div>
                         </div>
+                        {% endif %}
                         {% elif user.is_superuser%}
                         <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
                         <a href="{% url 'view_mesasges' %}" class="nav-item nav-link">Messages</a>
@@ -79,11 +84,11 @@
                         <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
                         <a href="{% url 'student_course' %}" class="nav-item nav-link">Courses</a>
                         <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{user.username}}</a>
-                            <div class="dropdown-menu m-0">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{user.username}}</a>
+                        <div class="dropdown-menu m-0">
                                 <a href="{% url 'user_profile' user.id %}" class="dropdown-item">Your Profile</a>
                                 <a href="{% url 'student_performance' user.id %}" class="dropdown-item">Dashboard</a>
-                            </div>
+                        </div>
                         </div>
                         {% endif %}
                         {% else %}

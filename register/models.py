@@ -39,3 +39,11 @@ class Invitation(models.Model):
 
     def is_expired(self):
         return self.expiration_datetime <= timezone.now()
+    
+
+class Assistant(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    related_instructor = models.OneToOneField(Instructor, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{str(self.user)}"

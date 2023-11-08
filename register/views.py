@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required , user_passes_test
 from .forms import LoginForm , SignUpForm
-from .models import Student, Invitation, Instructor
+from .models import *
 from instructor.models import Course , StudentCourseAccess , Lesson
 from django.utils import timezone
 
@@ -12,7 +12,11 @@ from django.utils import timezone
 @login_required
 @user_passes_test(lambda user: user.is_staff and not user.is_superuser)
 def generate_link(request):
-    superuser = Instructor.objects.get(staffuser = request.user)
+    superuser = Instructor.objects.filter(staffuser = request.user)
+    if superuser:
+        superuser = Instructor.objects.get(staffuser = request.user)
+    else:
+        superuser = Assistant.objects.get(user = request.user).related_instructor
     if request.method == "POST":
         expiration_date = request.POST.get('expiration_date')
         expiration_datetime = timezone.datetime.fromisoformat(expiration_date)
@@ -23,8 +27,6 @@ def generate_link(request):
         invitation_link = current_url.replace('generate-invitation', invitation_link)
         return render(request, 'invitation_link.html', {'link':invitation_link,'instructor':superuser.name})
     return render(request, 'invitation_link.html' , {'instructor':superuser.name})
-
-#Ahmed1234@
 
 def signup_view(request):
     if request.user.is_authenticated:

@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 
 # View Course of logged in instructor
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def course_view(request):
     current_instructor = Instructor.objects.get(staffuser = request.user)
     courses = Course.objects.filter(instructor = current_instructor)
@@ -19,7 +19,7 @@ def course_view(request):
 
 # Delete Course from instructor
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def delete_course(request, id):
     course = Course.objects.get(id=id)
     course.delete()
@@ -28,7 +28,7 @@ def delete_course(request, id):
 
 # View instructor's students
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def student_view(request):
     current_instructor = Instructor.objects.get(staffuser = request.user)
     students = Student.objects.filter(invited_by = current_instructor).order_by('name')
@@ -39,7 +39,7 @@ def student_view(request):
 
 # Upload course by instructor
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def upload_course(request):
     form = CourseForm()
     instructor = Instructor.objects.get(staffuser = request.user)
@@ -61,7 +61,7 @@ def upload_course(request):
 
 # Upload lesson by instructor
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def upload_lesson(request, id):
     form = LessonForm()
     current_instructor = Instructor.objects.get(staffuser = request.user)
@@ -117,7 +117,7 @@ def upload_lesson(request, id):
 
 # Delete lesson by instructor
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def delete_lesson(request, id):
     lesson = Lesson.objects.get(id=id)
     courseId = lesson.course.id
@@ -127,7 +127,7 @@ def delete_lesson(request, id):
 
 # Edit lesson by instructor
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def edit_lesson(request, id):
     lesson = Lesson.objects.get(id=id)
     courseId = lesson.course.id
@@ -141,7 +141,7 @@ def edit_lesson(request, id):
 
 # Upload Section by instructor
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def upload_section(request, id):
     form = SectionForm()
     form2 = OnlineSectionForm()
@@ -177,7 +177,7 @@ def upload_section(request, id):
 
 # Create quiz by instructor
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def create_quiz(request, id):
     lesson = Lesson.objects.get(id=id)
     if request.method == "POST":
@@ -218,7 +218,7 @@ def create_quiz(request, id):
 
 # Delete section by instructor
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def delete_section(request, id):
     section = Section.objects.get(id=id)
     lessonId = section.lesson.id
@@ -227,7 +227,7 @@ def delete_section(request, id):
 
 
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def edit_section(request, id):
     section = Section.objects.get(id=id)
     lessonId = section.lesson.id
@@ -240,7 +240,7 @@ def edit_section(request, id):
 
 
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def instructor_section(request, id):
     current_section = Section.objects.get(id=id)
     online = LiveMeeting.objects.filter(section=current_section).first()
@@ -250,7 +250,7 @@ def instructor_section(request, id):
 
 
 @login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
+@user_passes_test(lambda user: user.is_staff and not user.is_superuser and Instructor.objects.filter(staffuser=user).exists())
 def delete_student(request, id):
     deleted_student = User.objects.get(id=id)
     deleted_student.delete()

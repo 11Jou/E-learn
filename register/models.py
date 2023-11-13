@@ -47,3 +47,9 @@ class Assistant(models.Model):
 
     def __str__(self) -> str:
         return f"{str(self.user)}"
+    
+
+    def save(self, *args, **kwargs):
+        if not self.staffuser.is_staff or self.staffuser.is_superuser:
+            raise ValueError("Only staff users can be Assistant.")
+        super().save(*args, **kwargs)

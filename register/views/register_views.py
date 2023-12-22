@@ -1,32 +1,12 @@
 from django.shortcuts import render ,redirect
-from django.urls import reverse
 from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required , user_passes_test
-from .forms import LoginForm , SignUpForm
-from .models import *
-from instructor.models import Course , StudentCourseAccess , Lesson
+from django.contrib.auth.decorators import login_required 
+from register.forms import *
+from register.models import *
+from instructor.models import *
 from django.utils import timezone
-
-
-@login_required
-@user_passes_test(lambda user: user.is_staff and not user.is_superuser)
-def generate_link(request):
-    superuser = Instructor.objects.filter(staffuser = request.user)
-    if superuser:
-        superuser = Instructor.objects.get(staffuser = request.user)
-    else:
-        superuser = Assistant.objects.get(user = request.user).related_instructor
-    if request.method == "POST":
-        expiration_date = request.POST.get('expiration_date')
-        expiration_datetime = timezone.datetime.fromisoformat(expiration_date)
-        invitation = Invitation(staffuser = superuser , is_used = False, expiration_datetime = expiration_datetime)
-        invitation.save()
-        current_url = request.build_absolute_uri()
-        invitation_link = f"signup/?token={invitation.token}"
-        invitation_link = current_url.replace('generate-invitation', invitation_link)
-        return render(request, 'invitation_link.html', {'link':invitation_link,'instructor':superuser.name})
-    return render(request, 'invitation_link.html' , {'instructor':superuser.name})
+from core.const import *
 
 def signup_view(request):
     if request.user.is_authenticated:
@@ -40,7 +20,6 @@ def signup_view(request):
             return render(request, 'error.html', {'is_used':False})
     except:
         return render(request, 'error.html', {'is_used':True})
-    message = {'email':'Email is already exist', 'username':'username is already exist', 'valid':'Enter Valid Data'}
     if request.method == 'POST':
         form = SignUpForm(request.POST, request.FILES)
         if form.is_valid():
@@ -77,7 +56,6 @@ def login_view(request):
     if request.user.is_authenticated:
         return redirect('/')
     form = LoginForm()
-    message = 'username or password is incorrect'
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -88,11 +66,12 @@ def login_view(request):
                 login(request, user)
                 return redirect("/")
             else:
-                return render(request, 'login.html' , {'form':form, 'message': message})
+                return render(request, 'login.html' , {'form':form, 'message': error_message})
         else:
                 return render(request , 'login.html' , {'form':form , 'message': 'Enter Valid Data'})
-
     return render(request, 'login.html', {'form': form})
+
+
 
 @login_required(login_url='login')
 def logout_view(request):
